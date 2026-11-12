@@ -19,9 +19,17 @@ app.get('/',  (req, res) => {
 
 // Fun-fact route with API data 
 app.get('/api/fun-fact',async(req, res) => {
-
-    // 1. Fetch data from the external API
+    
+    //cod ethat might produce the error
+    try{
+        // 1. Fetch data from the external API
     const response = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
+
+
+    // Check if the API request was successful
+    if (!response.ok) {
+    throw new Error('Failed to fetch fun fact');
+}
 
 
     // 2. Convert the response into JSON
@@ -34,6 +42,16 @@ app.get('/api/fun-fact',async(req, res) => {
 
     // 3. Send the fact to the client
     res.json({ fact: data.text });
+
+    }
+    catch(error)
+    {
+        //Handle the error
+        console.log(error.message)
+        res.status(500).json({ error: 'Could not fetch fun fact' });
+    }
+
+    
 });
 
 //Start the server and listen on the port
